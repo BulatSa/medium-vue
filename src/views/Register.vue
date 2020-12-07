@@ -30,7 +30,10 @@
                 placeholder="Password"
               />
             </fieldset>
-            <button class="btn btn-primary pull-xs-right" :disabled="isSubmiting">
+            <button
+              class="btn btn-primary pull-xs-right"
+              :disabled="isSubmiting"
+            >
               Sign Up
             </button>
           </form>
@@ -50,8 +53,7 @@ export default {
   },
   methods: {
     onSubmit() {
-      console.log('submitted');
-      this.$store.commit('registerStart');
+      this.$store.dispatch('register');
     }
   }
 };
