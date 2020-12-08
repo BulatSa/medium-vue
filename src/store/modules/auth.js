@@ -1,18 +1,25 @@
 import authApi from '@/api/auth';
 
 const state = {
-  isSubmiting: false
+  isSubmiting: false,
+  currentUser: null,
+  validationErrors: false,
+  isLoggedIn: null
 };
 
 const mutations = {
   registerStart(state) {
     state.isSubmiting = true;
+    state.validationErrors = null;
   },
-  registerSuccess(state) {
+  registerSuccess(state, payload) {
     state.isSubmiting = false;
+    state.currentUser = payload;
+    state.isLoggedIn = true;
   },
-  registerFailed(state) {
+  registerFailed(state, payload) {
     state.isSubmiting = false;
+    state.validationErrors = payload;
   }
 };
 
@@ -23,18 +30,13 @@ const actions = {
       authApi
         .register(credentials)
         .then(response => {
-          console.log(response);
           context.commit('registerSuccess', response.data.user);
           resolve(response.data.user);
         })
         .catch(result => {
           context.commit('registerFailed', result.response.data.errors);
-          console.log('res error', result);
         });
     });
-    // setTimeout(() => {
-    //   context.commit('registerStart');
-    // }, 1000);
   }
 };
 
