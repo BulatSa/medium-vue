@@ -2,54 +2,72 @@ import authApi from '@/api/auth';
 import {setItem} from '@/helpers/persistanceStorage';
 
 const state = {
-  isSubmiting: false,
+  isSubmitting: false,
+  isLoggedIn: null,
   currentUser: null,
-  validationErrors: false,
-  isLoggedIn: null
+  validationErrors: null
 };
 
 export const mutationTypes = {
-  registerStart: '[auth] registerStart',
-  registerSuccess: '[auth] registerSuccess',
-  registerFailed: '[auth] registerFailed',
+  registerStart: '[auth] Register start',
+  registerSuccess: '[auth] Register success',
+  registerFailure: '[auth] Register failure',
 
-  loginStart: '[auth] loginStart',
-  loginSuccess: '[auth] loginSuccess',
-  loginFailed: '[auth] loginFailed'
+  loginStart: '[auth] Login start',
+  loginSuccess: '[auth] Login success',
+  loginFailure: '[auth] Login failure'
+};
+
+export const actionTypes = {
+  register: '[auth] Register',
+  login: '[auth] Login'
+};
+
+export const getterTypes = {
+  currentUser: '[auth] currentUser',
+  isLoggedIn: '[auth] isLoggedIn',
+  isAnonymous: '[auth] isAnonymous'
+};
+
+const getters = {
+  [getterTypes.currentUser]: state => {
+    return state.currentUser;
+  },
+  [getterTypes.isLoggedIn]: state => {
+    return Boolean(state.isLoggedIn);
+  },
+  [getterTypes.isAnonymous]: state => {
+    return state.isLoggedIn === false;
+  }
 };
 
 const mutations = {
   [mutationTypes.registerStart](state) {
-    state.isSubmiting = true;
+    state.isSubmitting = true;
     state.validationErrors = null;
   },
   [mutationTypes.registerSuccess](state, payload) {
-    state.isSubmiting = false;
-    state.currentUser = payload;
+    state.isSubmitting = false;
     state.isLoggedIn = true;
+    state.currentUser = payload;
   },
-  [mutationTypes.registerFailed](state, payload) {
-    state.isSubmiting = false;
+  [mutationTypes.registerFailure](state, payload) {
+    state.isSubmitting = false;
     state.validationErrors = payload;
   },
   [mutationTypes.loginStart](state) {
-    state.isSubmiting = true;
+    state.isSubmitting = true;
     state.validationErrors = null;
   },
   [mutationTypes.loginSuccess](state, payload) {
-    state.isSubmiting = false;
-    state.currentUser = payload;
+    state.isSubmitting = false;
     state.isLoggedIn = true;
+    state.currentUser = payload;
   },
-  [mutationTypes.loginFailed](state, payload) {
-    state.isSubmiting = false;
+  [mutationTypes.loginFailure](state, payload) {
+    state.isSubmitting = false;
     state.validationErrors = payload;
   }
-};
-
-export const actionTypes = {
-  register: '[auth] register',
-  login: '[auth] login'
 };
 
 const actions = {
@@ -65,7 +83,7 @@ const actions = {
         })
         .catch(result => {
           context.commit(
-            mutationTypes.registerFailed,
+            mutationTypes.registerFailure,
             result.response.data.errors
           );
         });
@@ -83,7 +101,7 @@ const actions = {
         })
         .catch(result => {
           context.commit(
-            mutationTypes.loginFailed,
+            mutationTypes.loginFailure,
             result.response.data.errors
           );
         });
@@ -93,6 +111,7 @@ const actions = {
 
 export default {
   state,
+  actions,
   mutations,
-  actions
+  getters
 };
