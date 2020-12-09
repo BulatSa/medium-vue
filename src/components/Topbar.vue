@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-light">
     <div class="container">
-      <router-link class="navbar-brand" :to="{name: 'home'}">
+      <router-link class="navbar-brand" :to="{name: 'globalFeed'}">
         Medium Clone
       </router-link>
       <ul class="nav navbar-nav pull-xs-right">
@@ -19,7 +19,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link"
-              :to="{name: 'create-article'}"
+              :to="{name: 'createArticle'}"
               active-class="active"
             >
               <i class="ion-compose"></i>&nbsp;New Article
@@ -37,10 +37,10 @@
           <li class="nav-item">
             <router-link
               class="nav-link"
-              :to="{name: 'userProfile', params: {slug: currentUser.userName}}"
+              :to="{name: 'userProfile', params: {slug: currentUser.username}}"
             >
               <img class="user-pic" :src="currentUser.image" />
-              &nbsp;{{ currentUser.userName }}
+              &nbsp;{{ currentUser.username }}
             </router-link>
           </li>
         </template>
