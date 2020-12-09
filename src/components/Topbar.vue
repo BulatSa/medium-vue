@@ -8,7 +8,7 @@
         <li class="nav-item">
           <router-link
             class="nav-link"
-            :to="{name: 'home'}"
+            :to="{name: 'globalFeed'}"
             exact
             active-class="active"
           >
