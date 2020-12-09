@@ -30,7 +30,7 @@
             </fieldset>
             <button
               class="btn btn-primary pull-xs-right"
-              :disabled="isSubmiting"
+              :disabled="isSubmitting"
             >
               Sign in
             </button>
