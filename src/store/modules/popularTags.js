@@ -9,11 +9,11 @@ const state = {
 export const mutationTypes = {
   getPopularTagsStart: '[popularTags] getFeedPopularTagsStart',
   getPopularTagsSuccess: '[popularTags] getFeedPopularTagsSuccess',
-  getPopularTagsFailure: '[popularTags] getFeedPopularTags'
+  getPopularTagsFailure: '[popularTags] getFeedPopularTagsFailure'
 };
 
 export const actionTypes = {
-  getPopularTags: '[popularTags] PopularTags'
+  getPopularTags: '[popularTags] Get PopularTags'
 };
 
 const mutations = {
