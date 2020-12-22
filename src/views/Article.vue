@@ -7,7 +7,7 @@
           <router-link
             :to="{name: 'userProfile', params: {slug: article.author.username}}"
           >
-            <img :src="article.author.image" alt="" />
+            <img :src="article.author.image" />
           </router-link>
           <div class="info">
             <router-link
@@ -23,17 +23,16 @@
           <span v-if="isAuthor">
             <router-link
               class="btn btn-outline-secondary btn-sm"
-              :to="{name: 'editArticle', params: article.slug}"
+              :to="{name: 'editArticle', params: {slug: article.slug}}"
             >
-              <i class="ion-edit">
-                Edit Article
-              </i>
+              <i class="ion-edit" />
+              Edit Article
             </router-link>
             <button
               class="btn btn-outline-danger btn-sm"
               @click="deleteArticle"
             >
-              <i class="ion-trash-a"></i>
+              <i class="ion-trash-a" />
               Delete Article
             </button>
           </span>
@@ -42,7 +41,7 @@
     </div>
     <div class="container page">
       <mcv-loading v-if="isLoading" />
-      <mcv-error-message v-if="error" :message="error" />
+      <mcv-error-message v-if="isLoading" :message="error" />
       <div class="row article-content" v-if="article">
         <div class="col-xs-12">
           <div>
@@ -56,12 +55,14 @@
 </template>
 
 <script>
+import {mapState, mapGetters} from 'vuex';
+
 import {actionTypes as articleActionTypes} from '@/store/modules/article';
 import {getterTypes as authGetterTypes} from '@/store/modules/auth';
-import {mapState, mapGetters} from 'vuex';
 import McvLoading from '@/components/Loading';
 import McvErrorMessage from '@/components/ErrorMessage';
 import McvTagList from '@/components/TagList';
+
 export default {
   name: 'McvArticle',
   components: {
@@ -72,8 +73,8 @@ export default {
   computed: {
     ...mapState({
       isLoading: state => state.article.isLoading,
-      error: state => state.article.error,
-      article: state => state.article.data
+      article: state => state.article.data,
+      error: state => state.article.error
     }),
     ...mapGetters({
       currentUser: authGetterTypes.currentUser
@@ -83,7 +84,7 @@ export default {
         return false;
       }
 
-      return this.currentUser.userName === this.article.author.username;
+      return this.currentUser.username === this.article.author.username;
     }
   },
   mounted() {
