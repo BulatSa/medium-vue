@@ -21,14 +21,17 @@
                 name: 'userProfile',
                 params: {slug: article.author.username}
               }"
-              class="author"
             >
               {{ article.author.username }}
             </router-link>
             <span class="date">{{ article.createdAt }}</span>
           </div>
           <div class="pull-xs-right">
-            add to favorites
+            <mcv-add-to-favorites
+              :is-favorited="article.favorited"
+              :article-slug="article.slug"
+              :favorites-count="article.favoritesCount"
+            ></mcv-add-to-favorites>
           </div>
         </div>
         <router-link
@@ -37,49 +40,46 @@
         >
           <h1>{{ article.title }}</h1>
           <p>{{ article.description }}</p>
-          <span>Read more..</span>
+          <span>Read more...</span>
           <mcv-tag-list :tags="article.tagList" />
         </router-link>
       </div>
       <mcv-pagination
         :total="feed.articlesCount"
         :limit="limit"
-        :current-page="currentPage"
         :url="baseUrl"
-      />
+        :current-page="currentPage"
+      ></mcv-pagination>
     </div>
   </div>
 </template>
 
 <script>
 import {mapState} from 'vuex';
+import {stringify, parseUrl} from 'query-string';
+
 import {actionTypes} from '@/store/modules/feed';
 import McvPagination from '@/components/Pagination';
+import {limit} from '@/helpers/vars';
 import McvLoading from '@/components/Loading';
 import McvErrorMessage from '@/components/ErrorMessage';
-import {limit} from '@/helpers/vars';
-import {stringify, parseUrl} from 'query-string';
 import McvTagList from '@/components/TagList';
+import McvAddToFavorites from '@/components/AddToFavorites';
 
 export default {
   name: 'McvFeed',
+  components: {
+    McvPagination,
+    McvLoading,
+    McvErrorMessage,
+    McvTagList,
+    McvAddToFavorites
+  },
   props: {
     apiUrl: {
       type: String,
       required: true
     }
-  },
-  data() {
-    return {
-      limit,
-      url: '/tags/dragons'
-    };
-  },
-  components: {
-    McvPagination,
-    McvLoading,
-    McvErrorMessage,
-    McvTagList
   },
   computed: {
     ...mapState({
@@ -87,11 +87,14 @@ export default {
       feed: state => state.feed.data,
       error: state => state.feed.error
     }),
-    currentPage() {
-      return Number(this.$route.query.page || '1');
+    limit() {
+      return limit;
     },
     baseUrl() {
       return this.$route.path;
+    },
+    currentPage() {
+      return Number(this.$route.query.page || '1');
     },
     offset() {
       return this.currentPage * limit - limit;
@@ -99,7 +102,6 @@ export default {
   },
   watch: {
     currentPage() {
-      console.log('change page');
       this.fetchFeed();
     }
   },
@@ -115,7 +117,6 @@ export default {
         ...parsedUrl.query
       });
       const apiUrlWithParams = `${parsedUrl.url}?${stringifiedParams}`;
-      console.log(apiUrlWithParams);
       this.$store.dispatch(actionTypes.getFeed, {apiUrl: apiUrlWithParams});
     }
   }
